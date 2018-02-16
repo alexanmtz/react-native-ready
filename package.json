@@ -1,0 +1,32 @@
+{
+  "name": "react-native-ready-app",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-native-dotenv": "^0.1.1",
+    "react-native-scripts": "1.11.1"
+  },
+  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "scripts": {
+    "start": "react-native-scripts start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
+    "test": "node node_modules/jest/bin/jest.js --watch"
+  },
+  "dependencies": {
+    "expo": "^25.0.0",
+    "prop-types": "^15.6.1",
+    "react": "^16.2.0",
+    "react-moment": "^0.7.0",
+    "react-native": "^0.52.2",
+    "react-native-animatable": "^1.2.4",
+    "react-native-elements": "^0.19.0",
+    "react-native-parallax-scroll-view": "^0.21.0",
+    "react-navigation": "^1.0.3",
+    "react-navigation-redux-helpers": "^1.0.3",
+    "react-redux": "^5.0.7",
+    "redux-promise": "^0.5.3",
+    "redux-thunk": "^2.2.0"
+  }
+}

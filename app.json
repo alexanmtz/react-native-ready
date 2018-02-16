@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "React Native ready",
+    "icon": "./assets/appIcon.png",
+    "version": "1.0.0",
+    "slug": "react-native-ready",
+    "sdkVersion": "25.0.0",
+    "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "com.reactnativeready.app"
+    },
+    "android": {
+      "package": "com.reactnativeready.app"
+    }
+  }
+}
