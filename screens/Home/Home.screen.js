@@ -1,39 +1,40 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
+import { ListItem } from 'react-native-elements';
 import Moment from 'react-moment';
-import { List, ListItem } from 'react-native-elements';
-import { NavigationActions } from 'react-navigation';
 
 // keys would be here
 //import { API_KEY, API_HOST } from 'react-native-dotenv';
 
 import Dimensions from 'Dimensions';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const listItem = (item, goto) => {
-    return (<ListItem containerStyle={styles.listItemView}
-                     roundAvatar
-                     onPress={() => goto({
-                         username: item.login.username,
-                         picture: item.picture.large,
-                         gender: item.gender,
-                         email: item.email,
-                         dob: item.dob,
-                         nat: item.nat,
-                         fullname: `${item.name.first} ${item.name.last}`
-                     })}
-                     title={`${item.name.title} ${item.name.first} ${item.name.last}`}
-                     subtitle={
-                         <View style={styles.subtitleView}>
-                             <Text style={styles.ratingText}>
-                                 <Moment element={Text} fromNow>{item.registered}</Moment>
-                             </Text>
-                         </View>
+const listItem = (item, navigation) => {
+    return (<ListItem
+        containerStyle={styles.listItemView}
+        roundAvatar
+        onPress={() => navigation.navigate('Review',
+            {
+                username: item.login.username,
+                picture: item.picture.large,
+                gender: item.gender,
+                email: item.email,
+                dob: item.dob,
+                nat: item.nat,
+                fullname: `${item.name.first} ${item.name.last}`
+            }
+        )}
+        title={`${item.name.title} ${item.name.first} ${item.name.last}`}
+        subtitle={
+            <View style={styles.subtitleView}>
+                <Text style={styles.ratingText}>
+                    <Moment element={Text} fromNow>{item.registered}</Moment>
+                </Text>
+            </View>
 
-                     }
-                     avatar={`${item.picture.medium}`}
-    />)
+        }
+        avatar={`${item.picture.medium}`}
+    />);
 }
 
 class HomeScreen extends Component {
@@ -56,55 +57,43 @@ class HomeScreen extends Component {
     }
 
     handleLoadMore = () => {
+        this.setState({ refreshing: true });
+        this.makeRequest(true);
+    }
+    
+    handleRefresh = () => {
+        this.setState({ refreshing: true });
         this.makeRequest();
     }
 
-    handleRefresh = () => {
-        this.setState({refreshing: true})
-    }
-
-    makeRequest = () => {
+    makeRequest = (append = false) => {
         fetch("https://randomuser.me/api/?results=10", {})
             .then(res => res.json())
-            .then(data => {
-                //console.log(data);
-                this.setState({
-                    data: data.results,
+            .then(({ results }) => {
+                this.setState(state => ({
+                    data: append ? [...state.data, ...results] : results,
                     refreshing: false
-                })
+                }))
 
             });
     }
 
     render() {
         return (
-            <List containerStyle={styles.listView}>
-                <FlatList
-                    onRefresh={this.handleRefresh}
-                    onEndReached={this.handleLoadMore}
-                    refreshing={this.state.refreshing}
-                    onEndReachedThreshold={50}
-                    data={this.state.data}
-                    renderItem={
-                        ({item}) => (listItem(item, this.props.navigate))
-                    }
-                    keyExtractor={item => item.login.username}
-                 />
-            </List>
+            <FlatList
+                onRefresh={this.handleRefresh}
+                onEndReached={this.handleLoadMore}
+                refreshing={this.state.refreshing}
+                onEndReachedThreshold={0.15}
+                data={this.state.data}
+                renderItem={
+                    ({ item }) => (listItem(item, this.props.navigation))
+                }
+                keyExtractor={item => item.login.username}
+                />
         );
     }
 }
-
-
-const mapStateToProps = state => ({
-    navigation: state.navigation
-});
-
-const mapDispatchToProps = dispatch => ({
-    navigate: (userdata) => (
-        dispatch(NavigationActions.navigate({routeName: 'Review', params: userdata}))
-    )
-});
 
 const styles = StyleSheet.create({
     listView: {
@@ -137,4 +126,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default HomeScreen;

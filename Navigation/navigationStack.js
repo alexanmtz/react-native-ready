@@ -3,21 +3,16 @@ import HomeScreen from "../screens/Home/Home.screen";
 import ReviewScreen from "../screens/Review/Review.screen";
 import CountryScreen from "../screens/Country/Country.screen";
 
-
 const routes = {
     Home: {
-        screen: HomeScreen,
-        routeName: 'Home'
+        screen: HomeScreen
     },
     Review: {
-        screen: ReviewScreen,
-        routeName: 'Review'
+        screen: ReviewScreen
     },
     Country: {
-        screen: CountryScreen,
-        routeName: 'Country'
+        screen: CountryScreen
     }
-
 };
 
 const navigator = StackNavigator(routes, {
