@@ -1,72 +1,62 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { AppRegistry, View, Text, ScrollView, StyleSheet, Image, children } from 'react-native';
+import { AppRegistry, View, Text, ScrollView, Image } from 'react-native';
 import { Header } from 'react-native-elements';
-import { AppLoading } from "expo";
+import { Asset, AppLoading, SplashScreen } from 'expo';
 import store from './store';
 import AppNavigation from './Navigation';
 import { initializeAssets } from "./assets";
-// Import Main Service
-import MainService from './app/Services/mainservice'
 
 export default class App extends Component {
     state = {
-        loaded: false
-    }
-
-   constructor(props) {
-        super(props);
-        this.state = {
-            assetsReady: false
-        };
-        MainService.load(v => this.setState({loaded: true}));
-    }
-
-    componentDidMount() {
-        initializeAssets.then((response) => {
-            this.setState({assetsReady: true})
-        })
-    }
-
-    render() {
-        /*
+        isSplashReady: false,
+        isAppReady: false,
+      };
+    
+      render() {
+        if (!this.state.isSplashReady) {
+          return (
+            <AppLoading
+              startAsync={this._cacheResourcesAsync}
+              onFinish={() => this.setState({ isSplashReady: true })}
+              onError={console.warn}
+              autoHideSplash={false}
+            />
+          );
+        }
+    
+        if (!this.state.isAppReady) {
+          return (
+            <Provider store={store}>
+                <View style={{ flex: 1}}>
+                    <Header
+                        centerComponent={{ text: 'React Native Ready', style: { color: '#fff' } }} />
+                    <AppNavigation />
+                </View>
+            </Provider>
+          );
+        }
+    
         return (
-            <View style={style.container}>
-                {this.state.loaded ? <Text>Welcome!</Text> : <Text>Carregando...</Text>}
-            </View>
-        )*/
-
-        if (!this.state.assetsReady) {
-            return (<AppLoading />);
-        }
-        
-        if (this.state.loaded){
-            return (
-                <Provider store={store}>
-                    <View style={{ flex: 1}}>
-                        <Header
-                            centerComponent={{ text: 'React Native Ready', style: { color: '#fff' } }} />
-                        <AppNavigation />
-                    </View>
-                </Provider>
-            );
-        } else {
-            return(
-                <Image
-                    style={{
-                        flex: 1,
-                        alignSelf: 'stretch',
-                        width: undefined,
-                        height: undefined
-                    }}
-                    source={require('./assets/images/splash.png')}
-                    >
-                    { children }
-                </Image>
-                //<Image source={require('./assets/images/splash.png')} style={{width: 100, height: 100}} />
-            )
-        }
-    }
+          <View style={{ flex: 1 }}>
+            <Image source={require('./assets/images/splash.png')} />
+          </View>
+        );    
+      }
+    
+      _cacheResourcesAsync = async () => {
+        SplashScreen.hide();
+        const images = [
+          require('./assets/images/splash.png'),
+        ];
+    
+        const cacheImages = images.map((image) => {
+          return Asset.fromModule(image).downloadAsync();
+        });
+    
+        await Promise.all(cacheImages);
+        this.setState({ isAppReady: true });
+      }
 }
 
 // skip this line if using Create React Native App
