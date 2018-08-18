@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { AppRegistry, View, Text, ScrollView } from 'react-native';
+import { AppRegistry, View, Text, ScrollView, Image } from 'react-native';
 import { Header } from 'react-native-elements';
-import { AppLoading } from "expo";
+import { Asset, AppLoading, SplashScreen } from 'expo';
 import store from './store';
 import AppNavigation from './Navigation';
 import { initializeAssets } from "./assets";
@@ -10,24 +10,28 @@ import { initializeAssets } from "./assets";
 export default class App extends Component {
 
     constructor(props) {
-        super(props);
-        this.state = {
-            assetsReady: false
-        };
+     super(props);
+     this.state = {
+        isSplashReady: false,
+        assetsReady: false,
+     }
     }
 
-    componentDidMount() {
-        initializeAssets.then((response) => {
-            this.setState({assetsReady: true})
-        })
-    }
-
+    
     render() {
-        if (!this.state.assetsReady) {
-            return (<AppLoading />);
+        if (!this.state.isSplashReady) {
+          return (
+            <AppLoading
+              startAsync={this._cacheSplashResourcesAsync}
+              onFinish={() => this.setState({ isSplashReady: true })}
+              onError={(e) => console.log('app loading error', e)}
+              autoHideSplash={false}
+            />
+          );
         }
-        
-        return (
+
+        if (!this.state.assetsReady) {
+          return (
             <Provider store={store}>
                 <View style={{ flex: 1}}>
                     <Header
@@ -35,7 +39,37 @@ export default class App extends Component {
                     <AppNavigation />
                 </View>
             </Provider>
+          );
+        }
+
+
+        return (
+          <View style={{ flex: 1 }}>
+            <Image
+                source={require('./assets/images/splash.png')}
+                onLoad={this._cacheResourcesAsync}
+            />
+          </View>
         );
+    }
+
+    _cacheSplashResourcesAsync = async () => {
+        const splashImage = require('./assets/images/splash.png');
+        return Asset.fromModule(splashImage).downloadAsync();
+    }
+
+    _cacheResourcesAsync = async () => {
+        SplashScreen.hide();
+        const images = [
+          require('./assets/images/splash.png'),
+        ];
+
+        const cacheImages = images.map((image) => {
+          return Asset.fromModule(image).downloadAsync();
+        });
+
+        await Promise.all([cacheImages, initializeAssets]);
+        this.setState({ assetsReady: true });
     }
 }
 
