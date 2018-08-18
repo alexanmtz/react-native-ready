@@ -8,24 +8,29 @@ import AppNavigation from './Navigation';
 import { initializeAssets } from "./assets";
 
 export default class App extends Component {
-    state = {
+
+    constructor(props) {
+     super(props);
+     this.state = {
         isSplashReady: false,
-        isAppReady: false,
-      };
+        assetsReady: false,
+     }
+    }
+
     
-      render() {
+    render() {
         if (!this.state.isSplashReady) {
           return (
             <AppLoading
-              startAsync={this._cacheResourcesAsync}
+              startAsync={this._cacheSplashResourcesAsync}
               onFinish={() => this.setState({ isSplashReady: true })}
-              onError={console.warn}
+              onError={(e) => console.log('app loading error', e)}
               autoHideSplash={false}
             />
           );
         }
-    
-        if (!this.state.isAppReady) {
+
+        if (!this.state.assetsReady) {
           return (
             <Provider store={store}>
                 <View style={{ flex: 1}}>
@@ -36,28 +41,36 @@ export default class App extends Component {
             </Provider>
           );
         }
-        
-    
+
+
         return (
           <View style={{ flex: 1 }}>
-            <Image source={require('./assets/images/splash.png')} />
+            <Image
+                source={require('./assets/images/splash.png')}
+                onLoad={this._cacheResourcesAsync}
+            />
           </View>
-        );    
-      }
-    
-      _cacheResourcesAsync = async () => {
+        );
+    }
+
+    _cacheSplashResourcesAsync = async () => {
+        const splashImage = require('./assets/images/splash.png');
+        return Asset.fromModule(splashImage).downloadAsync();
+    }
+
+    _cacheResourcesAsync = async () => {
         SplashScreen.hide();
         const images = [
           require('./assets/images/splash.png'),
         ];
-    
+
         const cacheImages = images.map((image) => {
           return Asset.fromModule(image).downloadAsync();
         });
-    
-        await Promise.all(cacheImages);
-        this.setState({ isAppReady: true });
-      }
+
+        await Promise.all([cacheImages, initializeAssets]);
+        this.setState({ assetsReady: true });
+    }
 }
 
 // skip this line if using Create React Native App

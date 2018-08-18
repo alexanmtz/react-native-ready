@@ -25,7 +25,10 @@ class ReviewScreen extends Component {
             nat: "loading",
             gender: "loading",
             email: "loading",
-            dob: "loading",
+            dob: {
+                age: 0,
+                date: null
+            },
             fullname: "loading"
 
         }
@@ -33,6 +36,7 @@ class ReviewScreen extends Component {
 
     componentDidMount() {
         const userParams = this.props.navigation.routes[1].params;
+        console.log('userparams', userParams);
         this.setState({
             username: userParams.username,
             picture: userParams.picture,
@@ -74,12 +78,14 @@ class ReviewScreen extends Component {
                                 source={{uri: `${this.state.picture}`}}
                                 activeOpacity={0.7}
                             />
+                            {this.state.dob &&
                             <Badge containerStyle={{backgroundColor: 'orange', marginBottom: 20}}>
-                                <Text>Birth: { this.state.dob }</Text>
-                            </Badge>
+                                <Text>Birth: { this.state.dob.age }</Text>
+                            </Badge>}
+                            {this.state.gender &&
                             <Badge containerStyle={{backgroundColor: 'orange', marginBottom: 20}}>
                                 <Text>Gender: { this.state.gender }</Text>
-                            </Badge>
+                            </Badge>}
 
                         </View>
                     )}

@@ -28,7 +28,7 @@ const listItem = (item, navigation) => {
         subtitle={
             <View style={styles.subtitleView}>
                 <Text style={styles.ratingText}>
-                    <Moment element={Text} fromNow>{item.registered}</Moment>
+                    <Moment element={Text} fromNow>{item.registered.date}</Moment>
                 </Text>
             </View>
 
