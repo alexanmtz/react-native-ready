@@ -16,3 +16,6 @@ run
 `yarn`
 
 `yarn start`
+
+
+Generate icon and spash use this tool https://apetools.webprofusion.com
