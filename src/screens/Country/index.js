@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import {
   View, Text, StyleSheet, TouchableHighlight, Linking, Image, Dimensions,
 } from 'react-native';
@@ -22,14 +23,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const CountryScreen = ({ navigation }) => {
+const CountryScreen = () => {
   const [countryCode, setCountryCode] = useState(null);
   const [country, setCountry] = useState({});
+
+  const { nat } = useSelector(state => state.user);
 
   useEffect(() => {
     const makeRequest = () => {
       // eslint-disable-next-line no-undef
-      fetch(`https://restcountries.eu/rest/v2/alpha/${navigation.state.params}`)
+      fetch(`https://restcountries.eu/rest/v2/alpha/${nat}`)
         .then(res => res.json())
         .then((data) => {
           setCountry(data);
@@ -138,9 +141,6 @@ CountryScreen.navigationOptions = {
 CountryScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
-    state: PropTypes.shape({
-      params: PropTypes.string.isRequired,
-    }).isRequired,
   }).isRequired,
 };
 

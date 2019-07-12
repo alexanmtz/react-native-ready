@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
+import { useSelector } from 'react-redux';
 import {
   Text, StyleSheet, TouchableHighlight, Linking, View, Dimensions,
 } from 'react-native';
 import {
   Avatar, Card, Button, Badge,
 } from 'react-native-elements';
-
-import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 const { height } = Dimensions.get('window');
 
@@ -29,28 +29,21 @@ const styles = StyleSheet.create({
     borderTopWidth: 0,
     borderBottomWidth: 0,
   },
-  /* title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  }, */
 });
 
 const ReviewScreen = ({ navigation }) => {
   const [data, setData] = useState(DATA_INITIAL);
-  console.log('data', data);
-  console.log('navigation', navigation);
+  const user = useSelector(state => state.user);
 
   useEffect(() => {
-    const { params } = navigation.state;
     setData({
-      username: params.username,
-      picture: params.picture,
-      nat: params.nat,
-      gender: params.gender,
-      email: params.email,
-      dob: params.dob,
-      fullname: params.fullname,
+      username: user.username,
+      picture: user.picture,
+      nat: user.nat,
+      gender: user.gender,
+      email: user.email,
+      dob: user.dob,
+      fullname: user.fullname,
     });
   }, []);
 
@@ -145,7 +138,7 @@ const ReviewScreen = ({ navigation }) => {
             </TouchableHighlight>
             <Button
               backgroundColor="#03A9F4"
-              onPress={() => navigation.navigate('Country', data.nat)}
+              onPress={() => navigation.navigate('Country')}
               buttonStyle={{
                 borderRadius: 0,
                 marginLeft: 0,
@@ -168,17 +161,6 @@ ReviewScreen.navigationOptions = {
 ReviewScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
-    state: PropTypes.shape({
-      params: PropTypes.shape({
-        username: PropTypes.string.isRequired,
-        picture: PropTypes.string.isRequired,
-        nat: PropTypes.string.isRequired,
-        gender: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-        dob: PropTypes.shape(PropTypes.string.isRequired).isRequired,
-        fullname: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
   }).isRequired,
 };
 

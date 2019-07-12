@@ -5,14 +5,9 @@ import {
 } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { format } from 'date-fns';
+import { useDispatch } from 'react-redux';
 
 const styles = StyleSheet.create({
-  /*  listView: {
-     marginTop: 60,
-     height,
-     borderTopWidth: 0,
-     borderBottomWidth: 0,
-   }, */
   listItemView: {
     height: 120,
     paddingBottom: 10,
@@ -21,28 +16,17 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingTop: 5,
   },
-  /*   ratingImage: {
-      width: '100%',
-      height: 50,
-      marginBottom: 5,
-      transform: [
-        { scaleY: 0.6 },
-        { scaleX: 0.6 },
-        { translateX: -80 },
-      ],
-    }, */
   ratingText: {
     paddingLeft: 10,
     color: 'grey',
   },
 });
 
-const listItem = (item, navigation) => (
-  <ListItem
-    containerStyle={styles.listItemView}
-    roundAvatar
-    onPress={() => navigation.navigate('Review',
-      {
+const listItem = (item, navigation, dispatch) => {
+  const navigateToReview = () => {
+    dispatch({
+      type: 'USER',
+      user: {
         username: item.login.username,
         picture: item.picture.large,
         gender: item.gender,
@@ -50,25 +34,37 @@ const listItem = (item, navigation) => (
         dob: item.dob,
         nat: item.nat,
         fullname: `${item.name.first} ${item.name.last}`,
-      })}
-    title={`${item.name.title} ${item.name.first} ${item.name.last}`}
-    subtitle={(
-      <View style={styles.subtitleView}>
-        <Text style={styles.ratingText}>
-          <Text>{format(new Date(item.registered.date), 'MM/DD/YYYY')}</Text>
-        </Text>
-      </View>
-    )}
-    leftAvatar={{
-      source: `${item.picture.medium}` && { uri: `${item.picture.medium}` },
-      title: `${item.name.first}`,
-    }}
-  />
-);
+      },
+    });
+    setTimeout(() => navigation.navigate('Review'), 1000);
+  };
+
+  return (
+    <ListItem
+      containerStyle={styles.listItemView}
+      roundAvatar
+      onPress={navigateToReview}
+      title={`${item.name.title} ${item.name.first} ${item.name.last}`}
+      subtitle={(
+        <View style={styles.subtitleView}>
+          <Text style={styles.ratingText}>
+            <Text>{format(new Date(item.registered.date), 'MM/DD/YYYY')}</Text>
+          </Text>
+        </View>
+      )}
+      leftAvatar={{
+        source: `${item.picture.medium}` && { uri: `${item.picture.medium}` },
+        title: `${item.name.first}`,
+      }}
+    />
+  );
+};
 
 const HomeScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(true);
+
+  const dispatch = useDispatch();
 
   const makeRequest = () => {
     // eslint-disable-next-line no-undef
@@ -95,7 +91,7 @@ const HomeScreen = ({ navigation }) => {
       onEndReachedThreshold={0.15}
       data={data}
       renderItem={
-        ({ item }) => (listItem(item, navigation))
+        ({ item }) => (listItem(item, navigation, dispatch))
       }
       keyExtractor={item => item.login.username}
     />
