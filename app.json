@@ -1,20 +1,4 @@
 {
-  "expo": {
-    "name": "React Native ready",
-    "icon": "./assets/appIcon.png",
-    "version": "1.0.0",
-    "slug": "react-native-ready",
-    "sdkVersion": "28.0.0",
-    "orientation": "portrait",
-    "ios": {
-      "bundleIdentifier": "com.reactnativeready.app"
-    },
-    "android": {
-      "package": "com.reactnativeready.app"
-    },
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "backgroundColor": "#000000"
-    }
-  }
+  "name": "reactnativeready",
+  "displayName": "React Native ready"
 }
