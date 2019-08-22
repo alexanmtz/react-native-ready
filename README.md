@@ -1,6 +1,16 @@
-# React Native ready app
+# English
+
+## React Native ready app
 
 This project is a prototype for a mobile app with a simple navigation between user and country, and with this example we are exploring the mobile capatibilites and react native.
+
+Please contribute with the english documentation.
+
+# Portuguese
+
+## React Native ready app
+
+Este é um projeto inicial de uma app mobile com uma navegação simples entre usuário e país, e com este exemplo nós podemos explorar as capacidades de uma app mobile usando react native.
 
 ### Feito Com 
 
